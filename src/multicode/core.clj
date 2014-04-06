@@ -1,7 +1,6 @@
 (ns multicode.core
+  (:require [clojure.core.match :refer (match)])
   (:gen-class))
-
-(use '[clojure.core.match :only  (match)])
 
 ;; (defn -main
 ;;   "I don't do a whole lot ... yet."
