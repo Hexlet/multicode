@@ -7,22 +7,29 @@
 ;;   [& args]
 ;;   (println "Hello, World!"))
 
-(defn- generate-value [var]
-  (match [var]
-         [(_ :guard integer?)] (list 'int var)))
+(defn transform-method-name [name]
+  (clojure.string/replace name #"-" "_"))
 
-(defn- generate-method-name [name]
-  (keyword
-    (clojure.string/replace name #"-" "_")))
+(defn generate-call [method-name args]
+  (format "%s(%s)"
+          (transform-method-name method-name)
+          (if args
+            (reduce #(apply str (str %1) ", " (str %2)) args)
+            "")))
 
-(defn ast-generator [clojure-code]
-  (letfn [(ast-iter [node]
-          (if (coll? node)
-            (reverse
-              (reduce
-                (fn [ast item]
-                  (conj ast (ast-iter item)))
-                (list (generate-method-name (first node)) 'nil 'send)
-                (rest node)))
-            (generate-value node)))]
-    (ast-iter clojure-code)))
+(defn generate-value [value]
+  (cond
+    (string? value) (format "'%s'" value)
+    :else value))
+
+(defn prettify-expression [[method-name & args]]
+  (if args
+    (generate-call method-name (map (fn [item]
+                                      (if (coll? item)
+                                        (prettify-expression item)
+                                        (generate-value item)))
+                                    args))
+    (generate-call method-name '())))
+
+(defn prettify-code [clojure-code]
+  (apply str (map #(prettify-expression %1) clojure-code)))
