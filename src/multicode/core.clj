@@ -22,14 +22,14 @@
     (string? value) (format "'%s'" value)
     :else value))
 
-(defn prettify-expression [[method-name & args]]
-  (if args
-    (generate-call method-name (map (fn [item]
-                                      (if (coll? item)
-                                        (prettify-expression item)
-                                        (generate-value item)))
-                                    args))
-    (generate-call method-name '())))
+(defn prettify-expression [[method-name & r]]
+  (let [args (or r '())
+        calculated-args (map (fn [item]
+                               (if (coll? item)
+                                 (prettify-expression item)
+                                 (generate-value item)))
+                             args)]
+    (generate-call method-name calculated-args)))
 
 (defn prettify-code [clojure-code]
   (apply str (map #(prettify-expression %1) clojure-code)))
