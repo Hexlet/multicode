@@ -8,9 +8,7 @@
 (defn generate-call [lang method-name args]
   (format "%s(%s)"
           (transform-method-name lang method-name)
-          (if args
-            (to-args args)
-            "")))
+          (if args (to-args args) "")))
 
 (defn generate-unary [lang operator value]
   (format "!%s" (generate-value lang value)))

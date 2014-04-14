@@ -1,5 +1,6 @@
 (ns multicode.ruby
-  (:require [multicode.lang :refer :all]))
+  (:require [multicode.lang :refer :all]
+            [clojure.walk :only [walk]]))
 
 (defn- generate-string [value]
   (format "'%s'" value))
@@ -23,12 +24,18 @@
 (defmethod generate-def :ruby [_ var-name value]
   (format "%s = %s" (transform-var-name :ruby var-name) value))
 
+(defmulti generate-ruby-value (fn [data] (class data)))
+(defmethod generate-ruby-value java.lang.String [data]
+  (generate-string data))
+(defmethod generate-ruby-value clojure.lang.PersistentVector [data]
+  (generate-array (map (partial generate-ruby-value) data)))
+(defmethod generate-ruby-value clojure.lang.PersistentArrayMap [data]
+  (generate-hash
+    (reduce #(merge %1 {(generate-ruby-value (first %2)), (generate-ruby-value (last %2))})
+            {}
+            data)))
+(defmethod generate-ruby-value :default [data]
+  data)
+
 (defmethod generate-value :ruby [_ value]
-  (cond
-    (string? value) (generate-string value)
-    (= clojure.lang.PersistentVector (type value)) (generate-array (map #(generate-value :ruby %) value))
-    (= clojure.lang.PersistentArrayMap (type value)) (generate-hash
-                                                       (reduce #(merge %1 {(generate-value :ruby (first %2)), (generate-value :ruby (last %2))})
-                                                               {}
-                                                               value))
-    :else value))
+ (generate-ruby-value value))
