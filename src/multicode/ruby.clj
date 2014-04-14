@@ -1,25 +1,25 @@
 (ns multicode.ruby
   (:require [multicode.lang :refer :all]
-            [clojure.walk :only [walk]]))
+            [clojure.string :as string]))
 
 (defn- generate-string [value]
   (format "'%s'" value))
 
 (defn- generate-array [value]
-  (format "[%s]" (clojure.string/join ", " value)))
+  (format "[%s]" (string/join ", " value)))
 
 (defn- generate-hash [value]
   (let [parts (reverse (map #(str (first %) " => " (last %))
                             value))]
-    (format "{%s}" (clojure.string/join ", " parts))))
+    (format "{%s}" (string/join ", " parts))))
 
 (defmethod get-terminator :ruby [_] "")
 
 (defmethod transform-method-name :ruby [_ method-name]
-  (clojure.string/replace method-name #"-" "_"))
+  (string/replace method-name #"-" "_"))
 
 (defmethod transform-var-name :ruby [_ var-name]
-  (clojure.string/replace var-name #"-" "_"))
+  (string/replace var-name #"-" "_"))
 
 (defmethod generate-def :ruby [_ var-name value]
   (format "%s = %s" (transform-var-name :ruby var-name) value))

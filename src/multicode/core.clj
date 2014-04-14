@@ -19,10 +19,10 @@
                       (generate-expression lang item)
                       (generate-value lang item)))
                   r)]
-    (cond
-      (= method-name 'not) (generate-unary lang 'not (first args))
-      (= method-name 'def) (generate-def lang (first args) (last args))
-      :else (generate-call lang method-name args))))
+    (case method-name
+      not (generate-unary lang not (first args))
+      def (generate-def lang (first args) (last args))
+      (generate-call lang method-name args))))
 
 (defn prettify-expression [lang expression]
   (str (generate-expression lang expression) (get-terminator lang)))

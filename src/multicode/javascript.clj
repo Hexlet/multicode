@@ -13,12 +13,12 @@
     (format "{%s}" (string/join ", " parts))))
 
 (defmethod transform-method-name :javascript [_ method-name]
-  (let [[first & rest] (string/split (str method-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) rest)))))
+  (let [[first & more] (string/split (str method-name) #"-")]
+    (str first (string/join "" (map #(string/capitalize %) more)))))
 
 (defmethod transform-var-name :javascript [_ var-name]
-  (let [[first & rest] (string/split (str var-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) rest)))))
+  (let [[first & more] (string/split (str var-name) #"-")]
+    (str first (string/join "" (map #(string/capitalize %) more)))))
 
 (defmethod generate-def :javascript [_ var-name value]
   (format "var %s = %s" (transform-var-name :javascript var-name) value))
