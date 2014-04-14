@@ -29,7 +29,7 @@
   (generate-string data))
 (defmethod generate-ruby-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-ruby-value) data)))
-(defmethod generate-ruby-value clojure.lang.PersistentArrayMap [data]
+(defmethod generate-ruby-value clojure.lang.APersistentMap [data]
   (generate-hash
     (reduce #(merge %1 {(generate-ruby-value (first %2)), (generate-ruby-value (last %2))})
             {}
