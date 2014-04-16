@@ -1,4 +1,5 @@
 # multicode
+[![Build Status](https://travis-ci.org/mokevnin/multicode.svg?branch=travis)](https://travis-ci.org/mokevnin/multicode)
 
 FIXME: description
 
