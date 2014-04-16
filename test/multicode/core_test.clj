@@ -15,3 +15,10 @@
        "var x = {a: 3, b: 'u', inner: {key: 'value'}};" '(def x {:a 3, :b :u, :inner {:key :value}})
        "assertEqual(3, fib(4));" '(assert-equal 3 (fib 4))
        "assert(!false);" '(assert (not false))))
+
+(deftest php-test
+  (are [php clj] (= php (prettify-expression :php clj))
+       "$myVar = array('1', 2, array('inner', 'ha'));" '(def my-var ["1" 2 [:inner "ha"]])
+       "$x = array('a' => 3, 'b' => 'u', 'inner' => array('key' => 'value'));" '(def x {:a 3, :b "u", :inner {:key :value}})
+       "assertEqual(3, fib(4));" '(assert-equal 3 (fib 4))
+       "assert(!false);" '(assert (not false))))

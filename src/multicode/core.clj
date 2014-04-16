@@ -1,6 +1,7 @@
 (ns multicode.core
   (:require [multicode.lang :refer :all]
             [multicode.ruby :refer :all]
+            [multicode.php :refer :all]
             [multicode.javascript :refer :all]))
 
 (defn to-args [coll] (reduce #(str (str %1) ", " (str %2)) coll))
