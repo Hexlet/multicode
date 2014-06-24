@@ -8,4 +8,5 @@
   :plugins  [[lein-exec "0.3.3"]]
   :main ^:skip-aot multicode.core
   :target-path "target/%s"
+  :jvm-opts  ["-XX:+TieredCompilation" "-XX:TieredStopAtLevel=1"]
   :profiles {:uberjar {:aot :all}})
