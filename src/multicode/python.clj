@@ -5,7 +5,11 @@
 (defn- generate-array [value]
   (format "[%s]" (string/join ", " value)))
 
-(defn- generate-string [value] (format "'%s'" (name value)))
+(defn- generate-string [value] 
+  (format "'%s'" (name value)))
+
+(defn- generate-char [value] 
+  (format "'%s'" value))
 
 (defn- generate-hash [value]
   (let [parts (reverse (map #(str (name (first %)) ": " (last %))
@@ -26,6 +30,8 @@
 (defmulti generate-python-value (fn [data] (class data)))
 (defmethod generate-python-value java.lang.String [data]
   (generate-string data))
+(defmethod generate-python-value java.lang.Character [data]
+  (generate-char data))
 (defmethod generate-python-value clojure.lang.Keyword [data]
   (generate-string data))
 (defmethod generate-python-value clojure.lang.PersistentVector [data]
@@ -41,4 +47,4 @@
   data)
 
 (defmethod generate-value :python [_ value]
- (generate-python-value value))
+  (generate-python-value value))
