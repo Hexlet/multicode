@@ -2,9 +2,11 @@
   (:require [multicode.lang :refer :all]
             [multicode.ruby :refer :all]
             [multicode.php :refer :all]
-            [multicode.javascript :refer :all]))
+            [multicode.javascript :refer :all]
+            [multicode.python :refer :all]))
 
-(defn to-args [coll] (reduce #(str (str %1) ", " (str %2)) coll))
+(defn to-args [coll] 
+  (reduce #(str (str %1) ", " (str %2)) coll))
 
 (defn generate-call [lang method-name args]
   (format "%s(%s)"
