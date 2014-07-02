@@ -5,7 +5,11 @@
 (defn- generate-array [value]
   (format "[%s]" (string/join ", " value)))
 
-(defn- generate-string [value] (format "'%s'" (name value)))
+(defn- generate-string [value] 
+  (format "'%s'" (name value)))
+
+(defn- generate-char [value] 
+  (format "'%s'" value))
 
 (defn- generate-hash [value]
   (let [parts (reverse (map #(str (name (first %)) ": " (last %))
@@ -26,6 +30,8 @@
 (defmulti generate-javascript-value (fn [data] (class data)))
 (defmethod generate-javascript-value java.lang.String [data]
   (generate-string data))
+(defmethod generate-javascript-value java.lang.Character [data]
+  (generate-char data))
 (defmethod generate-javascript-value clojure.lang.Keyword [data]
   (generate-string data))
 (defmethod generate-javascript-value clojure.lang.PersistentVector [data]
@@ -39,4 +45,4 @@
   data)
 
 (defmethod generate-value :javascript [_ value]
- (generate-javascript-value value))
+  (generate-javascript-value value))

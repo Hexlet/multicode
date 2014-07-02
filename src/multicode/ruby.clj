@@ -5,6 +5,9 @@
 (defn- generate-string [value]
   (format "'%s'" value))
 
+(defn- generate-char [value]
+  (generate-string value))
+
 (defn- generate-array [value]
   (format "[%s]" (string/join ", " value)))
 
@@ -27,6 +30,8 @@
 (defmulti generate-ruby-value (fn [data] (class data)))
 (defmethod generate-ruby-value java.lang.String [data]
   (generate-string data))
+(defmethod generate-ruby-value java.lang.Character [data]
+  (generate-char data))
 (defmethod generate-ruby-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-ruby-value) data)))
 (defmethod generate-ruby-value clojure.lang.APersistentMap [data]
@@ -38,4 +43,4 @@
   data)
 
 (defmethod generate-value :ruby [_ value]
- (generate-ruby-value value))
+  (generate-ruby-value value))

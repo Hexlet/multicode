@@ -5,6 +5,9 @@
 (defn- generate-string [value]
   (format "'%s'" value))
 
+(defn- generate-char [value]
+  (generate-string value))
+
 (defn- generate-array [value]
   (format "array(%s)" (string/join ", " value)))
 
@@ -24,6 +27,8 @@
 (defmulti generate-php-value (fn [data] (class data)))
 (defmethod generate-php-value java.lang.String [data]
   (generate-string data))
+(defmethod generate-php-value java.lang.Character [data]
+  (generate-char data)) 
 (defmethod generate-php-value clojure.lang.Keyword [data]
   (generate-string (name data)))
 (defmethod generate-php-value clojure.lang.PersistentVector [data]
@@ -37,4 +42,4 @@
   data)
 
 (defmethod generate-value :php [_ value]
- (generate-php-value value))
+  (generate-php-value value))
