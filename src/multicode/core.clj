@@ -4,7 +4,8 @@
             [multicode.php :refer :all]
             [multicode.javascript :refer :all]
             [multicode.python :refer :all]
-            [clojure.string :as s]))
+            [clojure.string :as s]
+            [clojure.set :as sets]))
 
 (defn to-args [coll] 
   (reduce #(str (str %1) ", " (str %2)) coll))
@@ -28,6 +29,11 @@
            (partition 2 assignmentes))
       (get-args-func))))
 
+(defn valide-method-name? [method-name]
+  (= 0 (count (sets/intersection 
+                (set (str (last (str method-name)))) 
+                #{\+ \= \- \*}))))
+
 (defn generate-expression [lang [method-name & r]]
   (letfn [(get-args [code]
                     (map (fn [item]
@@ -35,17 +41,20 @@
                              (generate-expression lang item)
                              (generate-value lang item)))  
                          code))]  
-    (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
-      (case method-name
-        not (generate-unary lang not (first (get-args r)))
-        def (generate-def lang (first r) (first (get-args (drop 1 r))))
-        let (generate-assignment lang (first r) #(get-args (drop 1 r))  ) 
-        (generate-call lang method-name (get-args r)))
-      (s/join 
-        (str (get-terminator lang) "\n") 
-        (concat 
-          (get-args (conj '() method-name)) 
-          (get-args r))))))
+    
+    (if (valide-method-name? method-name)
+      (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
+        (case method-name
+          not (generate-unary lang not (first (get-args r)))
+          def (generate-def lang (first r) (first (get-args (drop 1 r))))
+          let (generate-assignment lang (first r) #(get-args (drop 1 r))  ) 
+          (generate-call lang method-name (get-args r)))
+        (s/join 
+          (str (get-terminator lang) "\n") 
+          (concat 
+            (get-args (conj '() method-name)) 
+            (get-args r))))
+      (throw (Exception. "Wrong method name")))))
 
 (defn prettify-expression [lang expression]
   (str (generate-expression lang expression) (get-terminator lang)))
