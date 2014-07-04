@@ -15,7 +15,7 @@
           (if args (to-args args) "")))
 
 (defn generate-unary [lang operator value]
-  (format "!%s" (generate-value lang value)))
+  (format "!%s" value))
 
 (defn generate-assignment [lang assignmentes get-args-func]
   (s/join 
@@ -34,8 +34,8 @@
                            (if (= clojure.lang.PersistentList (type item)) 
                              (generate-expression lang item)
                              (generate-value lang item)))  
-                         code))]
-    (if method-name 
+                         code))]  
+    (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
       (case method-name
         not (generate-unary lang not (first (get-args r)))
         def (generate-def lang (first r) (first (get-args (drop 1 r))))
@@ -43,7 +43,9 @@
         (generate-call lang method-name (get-args r)))
       (s/join 
         (str (get-terminator lang) "\n") 
-        (get-args r)))))
+        (concat 
+          (get-args (conj '() method-name)) 
+          (get-args r))))))
 
 (defn prettify-expression [lang expression]
   (str (generate-expression lang expression) (get-terminator lang)))

@@ -1,37 +1,33 @@
 # multicode
 [![Build Status](https://travis-ci.org/mokevnin/multicode.svg?branch=travis)](https://travis-ci.org/mokevnin/multicode)
 
-FIXME: description
+## Description
 
-## Installation
+Transforms code written on Clojure to another languages
 
-Download from http://example.com/FIXME.
+## Accessible languages
+
+PHP, Python, Ruby, JavaScript
+
+## Develoment
+
+* Install leinengen
 
 ## Usage
 
-FIXME: explanation
+~~~Clojure
+(prettify-code :ruby 
+                        [ '(let [arr [\a \b \c] x 5 z 8] 
+                            (assert-equal \b (fetch arr 1 \d))
+                            (assert-equal \d (fetch arr 5 \d))
+                            (assert-equal \c (fetch arr -1 \d))
+                            (assert-equal \d (fetch arr -5 \d)))])
 
-    $ java -jar multicode-0.1.0-standalone.jar [args]
+#=>"arr = ['a', 'b', 'c']\nx = 5\nz = 8\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"  
+~~~
 
-## Options
+~~~Clojure
+(prettify-expression :javascript '(assert-equal 3 (fib 4)))
 
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
-
-### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
-
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+#=>"assertEqual(3, fib(4));"
+~~~
