@@ -5,10 +5,10 @@
 (defn- generate-array [value]
   (format "[%s]" (string/join ", " value)))
 
-(defn- generate-string [value] 
+(defn- generate-string [value]
   (format "'%s'" (name value)))
 
-(defn- generate-char [value] 
+(defn- generate-char [value]
   (format "'%s'" value))
 
 (defn- generate-hash [value]
@@ -19,8 +19,7 @@
 (defmethod get-terminator :python [_] "")
 
 (defmethod transform-method-name :python [_ method-name]
-  (let [[first & more] (string/split (str method-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (string/replace method-name #"-" "_"))
 
 (defmethod transform-var-name :python [_ var-name] (string/replace var-name #"-" "_"))
 

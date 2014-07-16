@@ -27,12 +27,12 @@
   (are [python clj] (= python (prettify-expression :python clj))
        "my_var = ['1', 2, ['inner', 'ha']]" '(def my-var ["1" 2 [:inner "ha"]])
        "x = {'a': 3, 'b': 'u', 'inner': {'key': 'value'}}" '(def x {:a 3, :b "u", :inner {:key :value}})
-       "assertEqual(3, fib(4))" '(assert-equal 3 (fib 4))
+       "assert_equal(3, fib(4))" '(assert-equal 3 (fib 4))
        "assert(!False)" '(assert (not false))))
 
 (deftest let-python-test
-  (is (= "arr = ['a', 'b', 'c']\nassertEqual('b', fetch(arr, 1, 'd'))\nassertEqual('d', fetch(arr, 5, 'd'))\nassertEqual('c', fetch(arr, -1, 'd'))\nassertEqual('d', fetch(arr, -5, 'd'))" 
-         (prettify-code :python 
+  (is (= "arr = ['a', 'b', 'c']\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
+         (prettify-code :python
                         ['(let [arr [\a \b \c]])
                          '(assert-equal \b (fetch arr 1 \d))
                          '(assert-equal \d (fetch arr 5 \d))
@@ -40,26 +40,26 @@
                          '(assert-equal \d (fetch arr -5 \d))]))))
 
 (deftest let-ruby-test
-  (is (= "arr = ['a', 'b', 'c']\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))" 
-         (prettify-code :ruby 
+  (is (= "arr = ['a', 'b', 'c']\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
+         (prettify-code :ruby
                         ['(let [arr [\a \b \c]])
                          '(assert-equal \b (fetch arr 1 \d))
-                         '(assert-equal \d (fetch arr 5 \d)) 
+                         '(assert-equal \d (fetch arr 5 \d))
                          '(assert-equal \c (fetch arr -1 \d))
-                         '(assert-equal \d (fetch arr -5 \d))])))) 
+                         '(assert-equal \d (fetch arr -5 \d))]))))
 
 (deftest let-java-scritp-test
-  (is (= "var arr = ['a', 'b', 'c'];\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));" 
-         (prettify-code :javascript 
+  (is (= "var arr = ['a', 'b', 'c'];\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+         (prettify-code :javascript
                         ['(let [arr [\a \b \c]])
                          '(assert-equal \b (fetch arr 1 \d))
-                         '(assert-equal \d (fetch arr 5 \d)) 
+                         '(assert-equal \d (fetch arr 5 \d))
                          '(assert-equal \c (fetch arr -1 \d))
                          '(assert-equal \d (fetch arr -5 \d))]))))
 
 (deftest let-php-test
-  (is (= "$arr = array('a', 'b', 'c');\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));" 
-         (prettify-code :php 
+  (is (= "$arr = array('a', 'b', 'c');\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+         (prettify-code :php
                         ['(let [arr [\a \b \c]])
                          '(assert-equal \b (fetch arr 1 \d))
                          '(assert-equal \d (fetch arr 5 \d))
@@ -68,58 +68,58 @@
 
 (deftest let-few-variable-ruby
   (is (= "arr = ['a', 'b', 'c']\nx = 5\nz = 8\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
-         (prettify-code :ruby 
+         (prettify-code :ruby
                         ['(let [arr [\a \b \c] x 5 z 8])
                          '(assert-equal \b (fetch arr 1 \d))
-                         '(assert-equal \d (fetch arr 5 \d)) 
+                         '(assert-equal \d (fetch arr 5 \d))
                          '(assert-equal \c (fetch arr -1 \d))
                          '(assert-equal \d (fetch arr -5 \d))]))))
 
 (deftest let-with-asserts-ruby
   (is (= "arr = ['a', 'b', 'c']\nx = 5\nz = 8\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
-         (prettify-code :ruby 
-                        [ '(let [arr [\a \b \c] x 5 z 8] 
-                            (assert-equal \b (fetch arr 1 \d))
-                            (assert-equal \d (fetch arr 5 \d))
-                            (assert-equal \c (fetch arr -1 \d))
-                            (assert-equal \d (fetch arr -5 \d)))])))) 
-
-(deftest let-with-asserts-php
-  (is (=  "$arr = array('a', 'b', 'c');\n$x = 5;\n$z = 8;\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
-         (prettify-code :php 
-                        [ '(let [arr [\a \b \c] x 5 z 8] 
-                            (assert-equal \b (fetch arr 1 \d))
-                            (assert-equal \d (fetch arr 5 \d))
-                            (assert-equal \c (fetch arr -1 \d))
-                            (assert-equal \d (fetch arr -5 \d)))])))) 
-
-(deftest let-with-asserts-javascript
-  (is (=  "var arr = ['a', 'b', 'c'];\nvar x = 5;\nvar z = 8;\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
-         (prettify-code :javascript 
+         (prettify-code :ruby
                         [ '(let [arr [\a \b \c] x 5 z 8]
                             (assert-equal \b (fetch arr 1 \d))
                             (assert-equal \d (fetch arr 5 \d))
                             (assert-equal \c (fetch arr -1 \d))
-                            (assert-equal \d (fetch arr -5 \d)))])))) 
+                            (assert-equal \d (fetch arr -5 \d)))]))))
+
+(deftest let-with-asserts-php
+  (is (=  "$arr = array('a', 'b', 'c');\n$x = 5;\n$z = 8;\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+         (prettify-code :php
+                        [ '(let [arr [\a \b \c] x 5 z 8]
+                            (assert-equal \b (fetch arr 1 \d))
+                            (assert-equal \d (fetch arr 5 \d))
+                            (assert-equal \c (fetch arr -1 \d))
+                            (assert-equal \d (fetch arr -5 \d)))]))))
+
+(deftest let-with-asserts-javascript
+  (is (=  "var arr = ['a', 'b', 'c'];\nvar x = 5;\nvar z = 8;\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+         (prettify-code :javascript
+                        [ '(let [arr [\a \b \c] x 5 z 8]
+                            (assert-equal \b (fetch arr 1 \d))
+                            (assert-equal \d (fetch arr 5 \d))
+                            (assert-equal \c (fetch arr -1 \d))
+                            (assert-equal \d (fetch arr -5 \d)))]))))
 
 (deftest let-with-asserts-python
-  (is (= "arr = ['a', 'b', 'c']\nx = 5\nz = 8\nassertEqual('b', fetch(arr, 1, 'd'))\nassertEqual('d', fetch(arr, 5, 'd'))\nassertEqual('c', fetch(arr, -1, 'd'))\nassertEqual('d', fetch(arr, -5, 'd'))" 
-         (prettify-code :python 
-                        ['(let [arr [\a \b \c] x 5 z 8] 
+  (is (= "arr = ['a', 'b', 'c']\nx = 5\nz = 8\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
+         (prettify-code :python
+                        ['(let [arr [\a \b \c] x 5 z 8]
                            (assert-equal \b (fetch arr 1 \d))
                            (assert-equal \d (fetch arr 5 \d))
                            (assert-equal \c (fetch arr -1 \d))
                            (assert-equal \d (fetch arr -5 \d)))]))))
 
 (deftest few-func-infunc
-  (is (= "assertEqual('b', fetch(arr, 1, 'd'))\nassertEqual('d', fetch(arr, 5, 'd'))\nassertEqual('c', fetch(arr, -1, 'd'))\nassertEqual('d', fetch(arr, -5, 'd'))" 
-         (prettify-code :python 
+  (is (= "assert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
+         (prettify-code :python
                         ['((assert-equal \b (fetch arr 1 \d))
                            (assert-equal \d (fetch arr 5 \d))
                            (assert-equal \c (fetch arr -1 \d))
                            (assert-equal \d (fetch arr -5 \d)))]))))
 
 (deftest unary-operator-test
-  (is (= "assert(!valid_credit_card?('440804l234567893'))" 
-         (prettify-code :ruby 
+  (is (= "assert(!valid_credit_card?('440804l234567893'))"
+         (prettify-code :ruby
                         ['(assert (not (valid-credit-card? "440804l234567893")))]))))
