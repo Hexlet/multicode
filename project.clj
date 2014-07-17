@@ -5,7 +5,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[slamhound "1.5.4"]
                  [org.clojure/clojure "1.5.1"]]
-  :plugins  [[lein-exec "0.3.3"]]
+  :plugins  [[lein-exec "0.3.3"]
+             [lein-kibit "0.0.8"]]
   :main ^:skip-aot multicode.core
   :target-path "target/%s"
   :jvm-opts  ["-XX:+TieredCompilation" "-XX:TieredStopAtLevel=1"]
