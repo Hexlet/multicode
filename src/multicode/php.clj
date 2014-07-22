@@ -28,9 +28,13 @@
 (defmethod generate-php-value java.lang.String [data]
   (generate-string data))
 (defmethod generate-php-value java.lang.Character [data]
-  (generate-char data)) 
+  (generate-char data))
 (defmethod generate-php-value clojure.lang.Keyword [data]
   (generate-string (name data)))
+(defmethod generate-php-value clojure.lang.Cons [data]
+  (generate-array (map (partial generate-php-value) (eval data))))
+(defmethod generate-php-value clojure.lang.PersistentList [data]
+  (generate-array (map (partial generate-php-value) data)))
 (defmethod generate-php-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-php-value) data)))
 (defmethod generate-php-value clojure.lang.APersistentMap [data]

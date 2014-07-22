@@ -32,6 +32,10 @@
   (generate-string data))
 (defmethod generate-ruby-value java.lang.Character [data]
   (generate-char data))
+(defmethod generate-ruby-value clojure.lang.Cons [data]
+  (generate-array (map (partial generate-ruby-value) (eval data))))
+(defmethod generate-ruby-value clojure.lang.PersistentList [data]
+  (generate-array (map (partial generate-ruby-value) data)))
 (defmethod generate-ruby-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-ruby-value) data)))
 (defmethod generate-ruby-value clojure.lang.APersistentMap [data]
