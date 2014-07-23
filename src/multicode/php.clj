@@ -8,6 +8,9 @@
 (defn- generate-char [value]
   (generate-string value))
 
+(defn- generate-var [value]
+  (str "$" (string/replace value #"-(\w)" #(string/upper-case (second %)))))
+
 (defn- generate-array [value]
   (format "array(%s)" (string/join ", " value)))
 
@@ -22,7 +25,7 @@
   (string/replace method-name #"-(\w)" #(string/upper-case (second %))))
 
 (defmethod transform-var-name :php [_ var-name]
-  (str "$" (string/replace var-name #"-(\w)" #(string/upper-case (second %)))))
+  (generate-var var-name))
 
 (defmulti generate-php-value (fn [data] (class data)))
 (defmethod generate-php-value java.lang.String [data]
@@ -31,6 +34,8 @@
   (generate-char data))
 (defmethod generate-php-value clojure.lang.Keyword [data]
   (generate-string (name data)))
+(defmethod generate-php-value clojure.lang.Symbol [data]
+  (generate-var data))
 (defmethod generate-php-value clojure.lang.Cons [data]
   (generate-array (map (partial generate-php-value) (eval data))))
 (defmethod generate-php-value clojure.lang.PersistentList [data]
