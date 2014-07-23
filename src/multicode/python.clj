@@ -33,6 +33,10 @@
   (generate-char data))
 (defmethod generate-python-value clojure.lang.Keyword [data]
   (generate-string data))
+(defmethod generate-python-value clojure.lang.Cons [data]
+  (generate-array (map (partial generate-python-value) (eval data))))
+(defmethod generate-python-value clojure.lang.PersistentList [data]
+  (generate-array (map (partial generate-python-value) data)))
 (defmethod generate-python-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-python-value) data)))
 (defmethod generate-python-value clojure.lang.PersistentArrayMap [data]

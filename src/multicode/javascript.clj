@@ -5,10 +5,10 @@
 (defn- generate-array [value]
   (format "[%s]" (string/join ", " value)))
 
-(defn- generate-string [value] 
+(defn- generate-string [value]
   (format "'%s'" (name value)))
 
-(defn- generate-char [value] 
+(defn- generate-char [value]
   (format "'%s'" value))
 
 (defn- generate-hash [value]
@@ -34,6 +34,10 @@
   (generate-char data))
 (defmethod generate-javascript-value clojure.lang.Keyword [data]
   (generate-string data))
+(defmethod generate-javascript-value clojure.lang.Cons [data]
+  (generate-array (map (partial generate-javascript-value) (eval data))))
+(defmethod generate-javascript-value clojure.lang.PersistentList [data]
+  (generate-array (map (partial generate-javascript-value) data)))
 (defmethod generate-javascript-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-javascript-value) data)))
 (defmethod generate-javascript-value clojure.lang.PersistentArrayMap [data]

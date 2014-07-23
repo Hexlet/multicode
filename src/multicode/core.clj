@@ -7,7 +7,7 @@
             [clojure.string :as s]
             [clojure.set :as sets]))
 
-(defn to-args [coll] 
+(defn to-args [coll]
   (reduce #(str (str %1) ", " (str %2)) coll))
 
 (defn generate-call [lang method-name args]
@@ -19,40 +19,41 @@
   (format "!%s" value))
 
 (defn generate-assignment [lang assignmentes get-args-func]
-  (s/join 
+  (s/join
     (str (get-terminator lang) "\n")
-    (concat 
-      (map (fn [args] 
-             (apply 
-               #(generate-def lang (str %1) (generate-value lang %2)) 
-               args)) 
+    (concat
+      (map (fn [args]
+             (apply
+               #(generate-def lang (str %1) (generate-value lang %2))
+               args))
            (partition 2 assignmentes))
       (get-args-func))))
 
 (defn valide-method-name? [method-name]
-  (= 0 (count (sets/intersection 
-                (set (str (last (str method-name)))) 
+  (= 0 (count (sets/intersection
+                (set (str (last (str method-name))))
                 #{\+ \= \- \*}))))
 
 (defn generate-expression [lang [method-name & r]]
   (letfn [(get-args [code]
                     (map (fn [item]
-                           (if (= clojure.lang.PersistentList (type item)) 
+                           (if (= clojure.lang.PersistentList (type item))
                              (generate-expression lang item)
-                             (generate-value lang item)))  
-                         code))]  
-    
+                             (generate-value lang item)))
+                         code))]
+
     (if (valide-method-name? method-name)
       (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
         (case method-name
           not (generate-unary lang not (first (get-args r)))
           def (generate-def lang (first r) (first (get-args (drop 1 r))))
-          let (generate-assignment lang (first r) #(get-args (drop 1 r))  ) 
+          let (generate-assignment lang (first r) #(get-args (drop 1 r))  )
+          quote (generate-value lang (first r))
           (generate-call lang method-name (get-args r)))
-        (s/join 
-          (str (get-terminator lang) "\n") 
-          (concat 
-            (get-args (conj '() method-name)) 
+        (s/join
+          (str (get-terminator lang) "\n")
+          (concat
+            (get-args (conj '() method-name))
             (get-args r))))
       (throw (Exception. "Wrong method name")))))
 
