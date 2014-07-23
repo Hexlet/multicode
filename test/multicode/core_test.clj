@@ -56,7 +56,7 @@
                          '(assert-equal \c (fetch arr -1 \d))
                          '(assert-equal \d (fetch arr -5 \d))]))))
 
-(deftest let-java-scritp-test
+(deftest let-javascript-test
   (is (= "var arr = ['a', 'b', 'c'];\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
          (prettify-code :javascript
                         ['(let [arr [\a \b \c]])
@@ -66,7 +66,7 @@
                          '(assert-equal \d (fetch arr -5 \d))]))))
 
 (deftest let-php-test
-  (is (= "$arr = array('a', 'b', 'c');\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+  (is (= "$arr = array('a', 'b', 'c');\nassertEqual('b', fetch($arr, 1, 'd'));\nassertEqual('d', fetch($arr, 5, 'd'));\nassertEqual('c', fetch($arr, -1, 'd'));\nassertEqual('d', fetch($arr, -5, 'd'));"
          (prettify-code :php
                         ['(let [arr [\a \b \c]])
                          '(assert-equal \b (fetch arr 1 \d))
@@ -93,7 +93,7 @@
                             (assert-equal \d (fetch arr -5 \d)))]))))
 
 (deftest let-with-asserts-php
-  (is (=  "$arr = array('a', 'b', 'c');\n$x = 5;\n$z = 8;\nassertEqual('b', fetch(arr, 1, 'd'));\nassertEqual('d', fetch(arr, 5, 'd'));\nassertEqual('c', fetch(arr, -1, 'd'));\nassertEqual('d', fetch(arr, -5, 'd'));"
+  (is (=  "$arr = array('a', 'b', 'c');\n$x = 5;\n$z = 8;\nassertEqual('b', fetch($arr, 1, 'd'));\nassertEqual('d', fetch($arr, 5, 'd'));\nassertEqual('c', fetch($arr, -1, 'd'));\nassertEqual('d', fetch($arr, -5, 'd'));"
          (prettify-code :php
                         [ '(let [arr [\a \b \c] x 5 z 8]
                             (assert-equal \b (fetch arr 1 \d))
