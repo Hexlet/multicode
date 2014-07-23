@@ -35,11 +35,11 @@
 (defmethod generate-javascript-value clojure.lang.Keyword [data]
   (generate-string data))
 (defmethod generate-javascript-value clojure.lang.Cons [data]
-  (generate-array (map (partial generate-javascript-value) (eval data))))
+  (generate-array (map generate-javascript-value (eval data))))
 (defmethod generate-javascript-value clojure.lang.PersistentList [data]
-  (generate-array (map (partial generate-javascript-value) data)))
+  (generate-array (map generate-javascript-value data)))
 (defmethod generate-javascript-value clojure.lang.PersistentVector [data]
-  (generate-array (map (partial generate-javascript-value) data)))
+  (generate-array (map generate-javascript-value data)))
 (defmethod generate-javascript-value nil [_] "null")
 (defmethod generate-javascript-value clojure.lang.PersistentArrayMap [data]
   (generate-hash
