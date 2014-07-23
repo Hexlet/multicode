@@ -39,6 +39,7 @@
   (generate-array (map (partial generate-python-value) data)))
 (defmethod generate-python-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-python-value) data)))
+(defmethod generate-python-value nil [_] "None")
 (defmethod generate-python-value clojure.lang.PersistentArrayMap [data]
   (generate-hash
     (reduce #(merge %1 {(generate-python-value (first %2)), (generate-python-value (last %2))})
