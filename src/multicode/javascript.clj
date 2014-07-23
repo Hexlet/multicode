@@ -40,6 +40,7 @@
   (generate-array (map (partial generate-javascript-value) data)))
 (defmethod generate-javascript-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-javascript-value) data)))
+(defmethod generate-javascript-value nil [_] "null")
 (defmethod generate-javascript-value clojure.lang.PersistentArrayMap [data]
   (generate-hash
     (reduce #(merge %1 {(first %2), (generate-javascript-value (last %2))})

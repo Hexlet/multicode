@@ -37,6 +37,7 @@
   (generate-array (map (partial generate-php-value) data)))
 (defmethod generate-php-value clojure.lang.PersistentVector [data]
   (generate-array (map (partial generate-php-value) data)))
+(defmethod generate-php-value nil [_] "nil")
 (defmethod generate-php-value clojure.lang.APersistentMap [data]
   (generate-hash
     (reduce #(merge %1 {(generate-php-value (first %2)), (generate-php-value (last %2))})
