@@ -37,11 +37,11 @@
 (defmethod generate-php-value clojure.lang.Symbol [data]
   (generate-var data))
 (defmethod generate-php-value clojure.lang.Cons [data]
-  (generate-array (map (partial generate-php-value) (eval data))))
+  (generate-array (map generate-php-value (eval data))))
 (defmethod generate-php-value clojure.lang.PersistentList [data]
-  (generate-array (map (partial generate-php-value) data)))
+  (generate-array (map generate-php-value data)))
 (defmethod generate-php-value clojure.lang.PersistentVector [data]
-  (generate-array (map (partial generate-php-value) data)))
+  (generate-array (map generate-php-value data)))
 (defmethod generate-php-value nil [_] "nil")
 (defmethod generate-php-value clojure.lang.APersistentMap [data]
   (generate-hash
