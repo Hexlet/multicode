@@ -4,6 +4,7 @@
             [multicode.php :refer :all]
             [multicode.javascript :refer :all]
             [multicode.python :refer :all]
+            [multicode.coffeescript :refer :all]
             [clojure.string :as s]
             [clojure.set :as sets]))
 
