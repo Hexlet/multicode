@@ -20,6 +20,15 @@
        "assertEqual(3, fib(4));" '(assert-equal 3 (fib 4))
        "assert(!false);" '(assert (not false))))
 
+(deftest coffeescript-test
+  (are [coffeescript clj] (= coffeescript (prettify-expression :coffeescript clj))
+       "myVar = ['1', 2, ['inner', 'ha']]" '(def my-var ["1" 2 [:inner "ha"]])
+       "theirVar = ['1', 2, ['inner', 'he', ['innermost', 3]]]" '(def their-var '("1" 2 [:inner "he" ("innermost" 3)]))
+       "yourVar = [1, '2', null, [null, [null]]]" '(def your-var '(1 "2" nil (nil [nil])))
+       "x = {a: 3, b: 'u', inner: {key: 'value'}}" '(def x {:a 3, :b :u, :inner {:key :value}})
+       "assertEqual(3, fib(4))" '(assert-equal 3 (fib 4))
+       "assert(!false)" '(assert (not false))))
+
 (deftest php-test
   (are [php clj] (= php (prettify-expression :php clj))
        "$myVar = array('1', 2, array('inner', 'ha'));" '(def my-var ["1" 2 [:inner "ha"]])
