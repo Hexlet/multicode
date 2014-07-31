@@ -10,10 +10,21 @@
 (defn to-args [coll]
   (reduce #(str (str %1) ", " (str %2)) coll))
 
-(defn generate-call [lang method-name args]
+(defn generate-method-call [lang method-name args]
   (format "%s(%s)"
           (transform-method-name lang method-name)
           (if args (to-args args) "")))
+
+(defn generate-object-method-call [lang method-name args]
+  (format "%s%s(%s)"
+          (transform-method-name lang (first args))
+          (transform-method-name lang method-name)
+          (if (second args) (to-args (rest args)) "")))
+
+(defn generate-call [lang method-name args]
+  (if (= (first (str method-name)) \.)
+    (generate-object-method-call lang method-name args)
+    (generate-method-call lang method-name args)))
 
 (defn generate-unary [lang operator value]
   (format "!%s" value))
@@ -51,8 +62,9 @@
     (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
       (case method-name
         not (generate-unary lang not (first (get-args r)))
-        def (generate-def lang (first r) (first (get-args (drop 1 r))))
-        let (generate-assignment lang (first r) #(get-args (drop 1 r))  )
+        def (generate-def lang (first r) (first (get-args (rest r))))
+        new (generate-object-create lang r)
+        let (generate-assignment lang (first r) #(get-args (rest r))  )
         quote (generate-value lang (first r))
         (generate-call lang method-name (get-args r)))
       (s/join

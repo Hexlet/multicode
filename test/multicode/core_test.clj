@@ -131,3 +131,8 @@
   (is (= "assert(!valid_credit_card?('440804l234567893'))"
          (prettify-code :ruby
                         ['(assert (not (valid-credit-card? "440804l234567893")))]))))
+(deftest object-test
+  (is (= "stack = Stack.new([5, 6, 7, 8])\nassert_equal(8, stack.pop())"
+         (prettify-code :ruby
+                       ['(let [stack (new (Stack [5, 6, 7, 8]))]
+                          (assert-equal 8 (.pop stack)))]))))
