@@ -143,5 +143,5 @@
 (deftest object-test
   (is (= "stack = Stack.new([5, 6, 7, 8])\nassert_equal(8, stack.pop())"
          (prettify-code :ruby
-                       ['(let [stack (new (Stack [5, 6, 7, 8]))]
+                       ['(let [stack (Stack. [5, 6, 7, 8])]
                           (assert-equal 8 (.pop stack)))]))))

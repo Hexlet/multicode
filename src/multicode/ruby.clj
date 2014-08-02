@@ -1,7 +1,7 @@
 (ns multicode.ruby
   (:require [multicode.lang :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as string]))
-(declare generate-ruby-object)
 
 (defn- generate-string [value]
   (format "'%s'" value))
@@ -29,7 +29,9 @@
   (format "%s = %s" (transform-var-name :ruby var-name) value))
 
 (defmethod generate-object-create :ruby [_ args]
-  (format "%s.new %s" (generate-value :ruby (first args)) (rest args)))
+  (format "%snew(%s)" (generate-value :ruby (first args))
+                      (string/join ", " (map #( generate-value :ruby %) (rest args)))
+          ))
 
 (defmulti generate-ruby-value (fn [data] (class data)))
 (defmethod generate-ruby-value java.lang.String [data]
@@ -39,8 +41,8 @@
 (defmethod generate-ruby-value clojure.lang.Cons [data]
   (generate-array (map generate-ruby-value (eval data))))
 (defmethod generate-ruby-value clojure.lang.PersistentList [data]
-  (if  (= (first data) 'new)
-    (generate-ruby-object (second data))
+  (if (h/object-name? (first data))
+    (generate-object-create :ruby data)
     (generate-array (map generate-ruby-value data))))
 (defmethod generate-ruby-value clojure.lang.PersistentVector [data]
   (generate-array (map generate-ruby-value data)))
@@ -55,11 +57,3 @@
 
 (defmethod generate-value :ruby [_ value]
   (generate-ruby-value value))
-
-(defn- generate-ruby-object [data]
-  (string/join
-    ""
-    [(first data)
-     ".new("
-     (string/join ", " (map generate-ruby-value (rest data)))
-     ")"]))
