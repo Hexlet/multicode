@@ -1,5 +1,6 @@
 (ns multicode.javascript
   (:require [multicode.lang :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as string]))
 
 (defn- generate-array [value]
@@ -15,6 +16,10 @@
   (let [parts (reverse (map #(str (name (first %)) ": " (last %))
                             value))]
     (format "{%s}" (string/join ", " parts))))
+
+(defmethod generate-object-create :javascript [_ args]
+  (format "new %s(%s)" (h/class-name (generate-value :javascript (first args)))
+                       (string/join ", " (map #( generate-value :javascript %) (rest args)))))
 
 (defmethod transform-method-name :javascript [_ method-name]
   (let [[first & more] (string/split (str method-name) #"-")]
@@ -37,15 +42,17 @@
 (defmethod generate-javascript-value clojure.lang.Cons [data]
   (generate-array (map generate-javascript-value (eval data))))
 (defmethod generate-javascript-value clojure.lang.PersistentList [data]
-  (generate-array (map generate-javascript-value data)))
+  (if (h/object-name? (first data))
+    (generate-object-create :javascript data)
+    (generate-array (map generate-javascript-value data))))
 (defmethod generate-javascript-value clojure.lang.PersistentVector [data]
   (generate-array (map generate-javascript-value data)))
 (defmethod generate-javascript-value nil [_] "null")
 (defmethod generate-javascript-value clojure.lang.PersistentArrayMap [data]
   (generate-hash
-    (reduce #(merge %1 {(first %2), (generate-javascript-value (last %2))})
-            {}
-            data)))
+   (reduce #(merge %1 {(first %2), (generate-javascript-value (last %2))})
+           {}
+           data)))
 (defmethod generate-javascript-value :default [data]
   data)
 

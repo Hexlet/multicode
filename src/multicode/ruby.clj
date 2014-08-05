@@ -30,8 +30,7 @@
 
 (defmethod generate-object-create :ruby [_ args]
   (format "%snew(%s)" (generate-value :ruby (first args))
-                      (string/join ", " (map #( generate-value :ruby %) (rest args)))
-          ))
+                      (string/join ", " (map #( generate-value :ruby %) (rest args)))))
 
 (defmulti generate-ruby-value (fn [data] (class data)))
 (defmethod generate-ruby-value java.lang.String [data]
@@ -49,9 +48,9 @@
 (defmethod generate-ruby-value nil [_] "nil")
 (defmethod generate-ruby-value clojure.lang.APersistentMap [data]
   (generate-hash
-    (reduce #(merge %1 {(generate-ruby-value (first %2)), (generate-ruby-value (last %2))})
-            {}
-            data)))
+   (reduce #(merge %1 {(generate-ruby-value (first %2)), (generate-ruby-value (last %2))})
+           {}
+           data)))
 (defmethod generate-ruby-value :default [data]
   data)
 
