@@ -30,8 +30,7 @@
 
 (defmethod generate-object-create :ruby [_ args]
   (format "%snew(%s)" (generate-value :ruby (first args))
-                      (string/join ", " (map #( generate-value :ruby %) (rest args)))
-          ))
+                      (string/join ", " (map #( generate-value :ruby %) (rest args)))))
 
 (defmulti generate-ruby-value (fn [data] (class data)))
 (defmethod generate-ruby-value java.lang.String [data]

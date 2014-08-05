@@ -1,5 +1,6 @@
 (ns multicode.php
   (:require [multicode.lang :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as string]))
 
 (defn- generate-string [value]
@@ -9,7 +10,10 @@
   (generate-string value))
 
 (defn- generate-var [value]
-  (str "$" (string/replace value #"-(\w)" #(string/upper-case (second %)))))
+  (let [var-name (string/replace value #"-(\w)" #(string/upper-case (second %)))]
+    (if (h/object-name? var-name)
+      var-name
+      (str "$" var-name))))
 
 (defn- generate-array [value]
   (format "array(%s)" (string/join ", " value)))
@@ -19,10 +23,16 @@
                             value))]
     (format "array(%s)" (string/join ", " parts))))
 
+(defmethod generate-object-create :php [_ args]
+  (format "%s(%s)" (h/class-name (generate-value :php (first args)))
+                   (string/join ", " (map #( generate-value :php %) (rest args)))))
+
 (defmethod get-terminator :php [_] ";")
 
 (defmethod transform-method-name :php [_ method-name]
-  (string/replace method-name #"-(\w)" #(string/upper-case (second %))))
+  (-> method-name
+      (string/replace #"-(\w)" #(string/upper-case (second %)))
+      (string/replace "." "->")))
 
 (defmethod transform-var-name :php [_ var-name]
   (generate-var var-name))
@@ -39,7 +49,9 @@
 (defmethod generate-php-value clojure.lang.Cons [data]
   (generate-array (map generate-php-value (eval data))))
 (defmethod generate-php-value clojure.lang.PersistentList [data]
-  (generate-array (map generate-php-value data)))
+  (if (h/object-name? (first data))
+    (generate-object-create :php data)
+    (generate-array (map generate-php-value data))))
 (defmethod generate-php-value clojure.lang.PersistentVector [data]
   (generate-array (map generate-php-value data)))
 (defmethod generate-php-value nil [_] "nil")
