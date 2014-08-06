@@ -20,7 +20,9 @@
 (defmethod get-terminator :ruby [_] "")
 
 (defmethod transform-method-name :ruby [_ method-name]
-  (string/replace method-name #"-" "_"))
+  (-> method-name
+      (string/replace #"-" "_")
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :ruby [_ var-name]
   (string/replace var-name #"-" "_"))

@@ -149,6 +149,9 @@
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
 
+(deftest ruby-static-methods-test
+  (is (= "Array.try_convert([1])" (prettify-code :ruby ['(Array/try-convert [1])]))))
+
 (deftest javascript-object-test
   (is (= "var stack = new Stack([5, 6, 7, 8]);\nassertEqual(8, stack.pop());\nassertEqual([5, 6, 7, 4, 2], stack.push([4, 2]));\nassertEqual([2, 4, 7], stack.pop(3));"
          (prettify-code :javascript
@@ -156,6 +159,9 @@
                             (assert-equal 8 (.pop stack))
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
+
+(deftest javascript-static-methods-test
+  (is (= "Array.tryConvert([1]);" (prettify-code :javascript ['(Array/try-convert [1])]))))
 
 (deftest coffeescript-object-test
   (is (=  "stack = new Stack([5, 6, 7, 8])\nassertEqual(8, stack.pop())\nassertEqual([5, 6, 7, 4, 2], stack.push([4, 2]))\nassertEqual([2, 4, 7], stack.pop(3))"
@@ -165,6 +171,9 @@
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
 
+(deftest coffeescript-static-methods-test
+  (is (= "Array.tryConvert([1])" (prettify-code :coffeescript ['(Array/try-convert [1])]))))
+
 (deftest python-object-test
   (is (= "stack = Stack([5, 6, 7, 8])\nassert_equal(8, stack.pop())\nassert_equal([5, 6, 7, 4, 2], stack.push([4, 2]))\nassert_equal([2, 4, 7], stack.pop(3))"
          (prettify-code :python
@@ -173,6 +182,9 @@
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
 
+(deftest python-static-methods-test
+  (is (= "Array.try_convert([1])" (prettify-code :python ['(Array/try-convert [1])]))))
+
 (deftest php-object-test
   (is (= "$stack = Stack(array(5, 6, 7, 8));\nassertEqual(8, $stack->pop());\nassertEqual(array(5, 6, 7, 4, 2), $stack->push(array(4, 2)));\nassertEqual(array(2, 4, 7), $stack->pop(3));"
          (prettify-code :php
@@ -180,3 +192,7 @@
                             (assert-equal 8 (.pop stack))
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
+
+(deftest php-static-methods-test
+  (is (= "Array::tryConvert(array(1));" (prettify-code :php ['(Array/try-convert [1])]))))
+

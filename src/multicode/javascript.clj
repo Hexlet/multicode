@@ -22,12 +22,12 @@
                        (string/join ", " (map #( generate-value :javascript %) (rest args)))))
 
 (defmethod transform-method-name :javascript [_ method-name]
-  (let [[first & more] (string/split (str method-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (-> method-name
+      (h/camel-case)
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :javascript [_ var-name]
-  (let [[first & more] (string/split (str var-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (h/camel-case var-name))
 
 (defmethod generate-def :javascript [_ var-name value]
   (format "var %s = %s" (transform-var-name :javascript var-name) value))

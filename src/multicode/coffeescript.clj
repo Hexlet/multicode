@@ -22,12 +22,12 @@
                        (string/join ", " (map #( generate-value :coffeescript %) (rest args)))))
 
 (defmethod transform-method-name :coffeescript [_ method-name]
-  (let [[first & more] (string/split (str method-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (-> method-name
+      (h/camel-case)
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :coffeescript [_ var-name]
-  (let [[first & more] (string/split (str var-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (h/camel-case var-name))
 
 (defmethod generate-def :coffeescript [_ var-name value]
   (format "%s = %s" (transform-var-name :coffeescript var-name) value))

@@ -9,3 +9,6 @@
 
 (defn class-name [cont-name]
   (s/replace cont-name "." ""))
+
+(defn camel-case [var-name]
+  (s/replace var-name #"-(\w)" #(s/upper-case (second %))))

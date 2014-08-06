@@ -10,7 +10,7 @@
   (generate-string value))
 
 (defn- generate-var [value]
-  (let [var-name (string/replace value #"-(\w)" #(string/upper-case (second %)))]
+  (let [var-name (h/camel-case value)]
     (if (h/object-name? var-name)
       var-name
       (str "$" var-name))))
@@ -31,8 +31,9 @@
 
 (defmethod transform-method-name :php [_ method-name]
   (-> method-name
-      (string/replace #"-(\w)" #(string/upper-case (second %)))
-      (string/replace "." "->")))
+      (h/camel-case)
+      (string/replace "." "->")
+      (string/replace #"/" "::")))
 
 (defmethod transform-var-name :php [_ var-name]
   (generate-var var-name))

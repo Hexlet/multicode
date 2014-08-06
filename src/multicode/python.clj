@@ -24,7 +24,9 @@
 (defmethod get-terminator :python [_] "")
 
 (defmethod transform-method-name :python [_ method-name]
-  (string/replace method-name #"-" "_"))
+  (-> method-name
+      (string/replace #"-" "_")
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :python [_ var-name] (string/replace var-name #"-" "_"))
 
