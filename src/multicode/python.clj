@@ -1,5 +1,6 @@
 (ns multicode.python
   (:require [multicode.lang :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as string]))
 
 (defn- generate-array [value]
@@ -16,10 +17,16 @@
                             value))]
     (format "{%s}" (string/join ", " parts))))
 
+(defmethod generate-object-create :python [_ args]
+  (format "%s(%s)" (h/class-name (generate-value :python (first args)))
+                   (string/join ", " (map #( generate-value :python %) (rest args)))))
+
 (defmethod get-terminator :python [_] "")
 
 (defmethod transform-method-name :python [_ method-name]
-  (string/replace method-name #"-" "_"))
+  (-> method-name
+      (string/replace #"-" "_")
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :python [_ var-name] (string/replace var-name #"-" "_"))
 
@@ -36,7 +43,9 @@
 (defmethod generate-python-value clojure.lang.Cons [data]
   (generate-array (map generate-python-value (eval data))))
 (defmethod generate-python-value clojure.lang.PersistentList [data]
-  (generate-array (map generate-python-value data)))
+  (if (h/object-name? (first data))
+    (generate-object-create :python data)
+    (generate-array (map generate-python-value data))))
 (defmethod generate-python-value clojure.lang.PersistentVector [data]
   (generate-array (map generate-python-value data)))
 (defmethod generate-python-value nil [_] "None")

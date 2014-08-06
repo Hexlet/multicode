@@ -1,5 +1,6 @@
 (ns multicode.coffeescript
   (:require [multicode.lang :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as string]))
 
 (defn- generate-array [value]
@@ -16,13 +17,17 @@
                             value))]
     (format "{%s}" (string/join ", " parts))))
 
+(defmethod generate-object-create :coffeescript [_ args]
+  (format "new %s(%s)" (h/class-name (generate-value :coffeescript (first args)))
+                       (string/join ", " (map #( generate-value :coffeescript %) (rest args)))))
+
 (defmethod transform-method-name :coffeescript [_ method-name]
-  (let [[first & more] (string/split (str method-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (-> method-name
+      (h/camel-case)
+      (string/replace #"/" ".")))
 
 (defmethod transform-var-name :coffeescript [_ var-name]
-  (let [[first & more] (string/split (str var-name) #"-")]
-    (str first (string/join "" (map #(string/capitalize %) more)))))
+  (h/camel-case var-name))
 
 (defmethod generate-def :coffeescript [_ var-name value]
   (format "%s = %s" (transform-var-name :coffeescript var-name) value))
@@ -39,7 +44,9 @@
 (defmethod generate-coffeescript-value clojure.lang.Cons [data]
   (generate-array (map generate-coffeescript-value (eval data))))
 (defmethod generate-coffeescript-value clojure.lang.PersistentList [data]
-  (generate-array (map generate-coffeescript-value data)))
+  (if (h/object-name? (first data))
+    (generate-object-create :coffeescript data)
+    (generate-array (map generate-coffeescript-value data))))
 (defmethod generate-coffeescript-value clojure.lang.PersistentVector [data]
   (generate-array (map generate-coffeescript-value data)))
 (defmethod generate-coffeescript-value nil [_] "null")

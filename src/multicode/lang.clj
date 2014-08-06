@@ -12,6 +12,8 @@
 (defmulti generate-value (fn [lang _] lang))
 (defmethod generate-value :default [_ var-name] var-name)
 
+(defmulti generate-object-create (fn [lang _] lang))
+
 (defmulti generate-def (fn [lang _ _] lang))
 (defmethod generate-def :default [lang var-name value]
   (format "%s = %s" (transform-var-name lang var-name) value))

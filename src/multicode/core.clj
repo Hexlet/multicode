@@ -5,16 +5,28 @@
             [multicode.javascript :refer :all]
             [multicode.python :refer :all]
             [multicode.coffeescript :refer :all]
+            [multicode.helper :as h]
             [clojure.string :as s]
             [clojure.set :as sets]))
 
 (defn to-args [coll]
   (reduce #(str (str %1) ", " (str %2)) coll))
 
-(defn generate-call [lang method-name args]
+(defn generate-method-call [lang method-name args]
   (format "%s(%s)"
           (transform-method-name lang method-name)
           (if args (to-args args) "")))
+
+(defn generate-object-method-call [lang method-name args]
+  (format "%s%s(%s)"
+          (transform-method-name lang (first args))
+          (transform-method-name lang method-name)
+          (if (second args) (to-args (rest args)) "")))
+
+(defn generate-call [lang method-name args]
+  (if (= (first (str method-name)) \.)
+    (generate-object-method-call lang method-name args)
+    (generate-method-call lang method-name args)))
 
 (defn generate-unary [lang operator value]
   (format "!%s" value))
@@ -50,12 +62,13 @@
     (validate-method-name method-name)
 
     (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
-      (case method-name
-        not (generate-unary lang not (first (get-args r)))
-        def (generate-def lang (first r) (first (get-args (drop 1 r))))
-        let (generate-assignment lang (first r) #(get-args (drop 1 r))  )
-        quote (generate-value lang (first r))
-        (generate-call lang method-name (get-args r)))
+      (cond
+        (h/object-name? method-name) (generate-object-create lang r)
+        (= method-name 'not) (generate-unary lang not (first (get-args r)))
+        (= method-name 'def) (generate-def lang (first r) (first (get-args (rest r))))
+        (= method-name 'let) (generate-assignment lang (first r) #(get-args (rest r))  )
+        (= method-name 'quote) (generate-value lang (first r))
+        :else (generate-call lang method-name (get-args r)))
       (s/join
         (str (get-terminator lang) "\n")
         (concat
