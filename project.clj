@@ -1,4 +1,4 @@
-(defproject multicode "0.1.1"
+(defproject multicode "0.1.1-SNAPSHOT"
   :description "Asserts compiler for hexlet battle"
   :url "https://battle.hexlet.io"
   :license {:name "Eclipse Public License"
