@@ -45,7 +45,7 @@
        "your_var = [1, '2', None, [None, [None]]]" '(def your-var '(1 "2" nil (nil [nil])))
        "x = {'a': 3, 'b': 'u', 'inner': {'key': 'value'}}" '(def x {:a 3, :b "u", :inner {:key :value}})
        "assert_equal(3, fib(4))" '(assert-equal 3 (fib 4))
-       "assert(!False)" '(assert (not false))))
+       "assert(not False)" '(assert (not false))))
 
 (deftest let-python-test
   (is (= "arr = ['a', 'b', 'c']\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"

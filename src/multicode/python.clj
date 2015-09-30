@@ -17,6 +17,9 @@
                             value))]
     (format "{%s}" (string/join ", " parts))))
 
+(defmethod generate-unary :python [_ value]
+  (format "not %s" value))
+
 (defmethod generate-object-create :python [_ args]
   (format "%s(%s)" (h/class-name (generate-value :python (first args)))
                    (string/join ", " (map #( generate-value :python %) (rest args)))))
