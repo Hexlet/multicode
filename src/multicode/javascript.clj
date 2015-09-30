@@ -13,7 +13,7 @@
   (format "'%s'" value))
 
 (defn- generate-hash [value]
-  (let [parts (reverse (map #(str (name (first %)) ": " (last %))
+  (let [parts (reverse (map #(str "'" (name (first %)) "'" ": " (last %))
                             value))]
     (format "{%s}" (string/join ", " parts))))
 

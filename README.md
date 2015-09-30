@@ -1,5 +1,5 @@
 # multicode
-[![Build Status](https://travis-ci.org/mokevnin/multicode.svg?branch=travis)](https://travis-ci.org/mokevnin/multicode)
+[![Build Status](https://travis-ci.org/Hexlet/multicode.svg?branch=travis)](https://travis-ci.org/mokevnin/multicode)
 
 ## Description
 
@@ -11,13 +11,13 @@ PHP, Python, Ruby, JavaScript
 
 ## Develoment
 
-* Install leinengen
+* Install leiningen
 
 ## Usage
 
 
-    (prettify-code :ruby 
-                   [ '(let [arr [\a \b \c] x 5 z 8] 
+    (prettify-code :ruby
+                   [ '(let [arr [\a \b \c] x 5 z 8]
                    (assert-equal \b (fetch arr 1 \d))
                    (assert-equal \d (fetch arr 5 \d))
                    (assert-equal \c (fetch arr -1 \d))
@@ -29,7 +29,7 @@ PHP, Python, Ruby, JavaScript
     assert_equal('b', fetch(arr, 1, 'd'))
     assert_equal('d', fetch(arr, 5, 'd'))
     assert_equal('c', fetch(arr, -1, 'd'))
-    assert_equal('d', fetch(arr, -5, 'd'))"  
+    assert_equal('d', fetch(arr, -5, 'd'))"
 
     (prettify-expression :javascript '(assert-equal 3 (fib 4)))
 
