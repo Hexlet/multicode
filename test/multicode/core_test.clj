@@ -33,7 +33,7 @@
   (are [php clj] (= php (prettify-expression :php clj))
        "$myVar = array('1', 2, array('inner', 'ha'));" '(def my-var ["1" 2 [:inner "ha"]])
        "$theirVar = array('1', 2, array('inner', 'he', array('innermost', 3)));" '(def their-var '("1" 2 [:inner "he" ("innermost" 3)]))
-       "$yourVar = array(1, '2', nil, array(nil, array(nil)));" '(def your-var '(1 "2" nil (nil [nil])))
+       "$yourVar = array(1, '2', NULL, array(NULL, array(NULL)));" '(def your-var '(1 "2" nil (nil [nil])))
        "$x = array('a' => 3, 'b' => 'u', 'inner' => array('key' => 'value'));" '(def x {:a 3, :b "u", :inner {:key :value}})
        "assertEqual(3, fib(4));" '(assert-equal 3 (fib 4))
        "assert(!false);" '(assert (not false))))
