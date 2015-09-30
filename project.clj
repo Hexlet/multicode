@@ -1,6 +1,6 @@
 (defproject multicode "0.1.1"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Asserts compiler for hexlet battle"
+  :url "https://battle.hexlet.io"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[slamhound "1.5.4"]
