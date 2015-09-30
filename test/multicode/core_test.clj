@@ -16,7 +16,7 @@
        "var myVar = ['1', 2, ['inner', 'ha']];" '(def my-var ["1" 2 [:inner "ha"]])
        "var theirVar = ['1', 2, ['inner', 'he', ['innermost', 3]]];" '(def their-var '("1" 2 [:inner "he" ("innermost" 3)]))
        "var yourVar = [1, '2', null, [null, [null]]];" '(def your-var '(1 "2" nil (nil [nil])))
-       "var x = {a: 3, b: 'u', inner: {key: 'value'}};" '(def x {:a 3, :b :u, :inner {:key :value}})
+       "var x = {'a': 3, 'b': 'u', 'inner': {'key': 'value'}};" '(def x {:a 3, :b :u, :inner {:key :value}})
        "assertEqual(3, fib(4));" '(assert-equal 3 (fib 4))
        "assert(!false);" '(assert (not false))))
 
