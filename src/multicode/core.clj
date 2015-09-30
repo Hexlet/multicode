@@ -28,9 +28,6 @@
     (generate-object-method-call lang method-name args)
     (generate-method-call lang method-name args)))
 
-(defn generate-unary [lang operator value]
-  (format "!%s" value))
-
 (defn generate-assignment [lang assignmentes get-args-func]
   (s/join
     (str (get-terminator lang) "\n")
@@ -64,7 +61,7 @@
     (if (and method-name (not= clojure.lang.PersistentList (type method-name)))
       (cond
         (h/object-name? method-name) (generate-object-create lang r)
-        (= method-name 'not) (generate-unary lang not (first (get-args r)))
+        (= method-name 'not) (generate-unary lang (first (get-args r)))
         (= method-name 'def) (generate-def lang (first r) (first (get-args (rest r))))
         (= method-name 'let) (generate-assignment lang (first r) #(get-args (rest r))  )
         (= method-name 'quote) (generate-value lang (first r))

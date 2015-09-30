@@ -3,6 +3,9 @@
 (defmulti transform-method-name (fn [lang _] lang))
 (defmethod transform-method-name :default [_ method-name] method-name)
 
+(defmulti generate-unary (fn [lang _] lang))
+(defmethod generate-unary :default [_ expr] (format "!%s" expr))
+
 (defmulti get-terminator identity)
 (defmethod get-terminator :default [_] ";")
 
