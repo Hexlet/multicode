@@ -2,6 +2,21 @@
   (:require [clojure.test :refer :all]
             [multicode.core :refer :all]))
 
+(deftest go-test
+  (are [go clj] (= go (prettify-expression :go clj))
+       "myVar := []int{1, 2, 3}" '(def my-var [1 2 3])
+       "theirVar := [][]int{[]int{1, 2, 3}, []int{4, 5, 6}}" '(def their-var [[1, 2, 3] [4, 5, 6 ]])
+       "theirVar2 := [][]int{[]int{1, 2, 3}, []int{4, 5, 6}}" '(def their-var2 '( [1, 2, 3] [4, 5, 6 ] ))
+       "x := map[string]int{\"a\": 3, \"b\": 5}" '(def x {:a 3, :b 5})
+       "x2 := map[string][]string{\"a\": []string{\"str1\", \"str2\"}, \"b\": []string{\"str3\", \"str4\"}}" '(def x2 {:a ["str1", "str2"], :b ["str3", "str4"]})
+       "object := Stack{4, 3}" '(def object '(Stack. 4 3))
+       "arrObjects := []Stack{Stack{3, 4}, Stack{4, 5}}" '(def arrObjects [ (Stack. 3 4), (Stack. 4 5) ])
+       "assertEqual(3, fib(4))" '(assert-equal 3 (fib 4))
+       "assert(!false)" '(assert (not false))
+       "stack := Stack{[]int{1, 2, 3, 4}}\nstack.pop()", '(let [stack (Stack. [1 2 3 4])] (.pop stack))
+       ))
+
+
 (deftest ruby-test
   (are [ruby clj] (= ruby (prettify-expression :ruby clj))
        "my_var = ['1', 2, [:inner, 'ha']]" '(def my-var ["1" 2 [:inner "ha"]])
@@ -46,6 +61,16 @@
        "x = {'a': 3, 'b': 'u', 'inner': {'key': 'value'}}" '(def x {:a 3, :b "u", :inner {:key :value}})
        "assert_equal(3, fib(4))" '(assert-equal 3 (fib 4))
        "assert(not False)" '(assert (not false))))
+
+(deftest let-go-test
+  (is (= "arr := []rune{'a', 'b', 'c'}\nassertEqual('b', fetch(arr, 1, 'd'))\nassertEqual('d', fetch(arr, 5, 'd'))\nassertEqual('c', fetch(arr, -1, 'd'))\nassertEqual('d', fetch(arr, -5, 'd'))"
+         (prettify-code :go
+                        ['(let [arr [\a \b \c]])
+                         '(assert-equal \b (fetch arr 1 \d))
+                         '(assert-equal \d (fetch arr 5 \d))
+                         '(assert-equal \c (fetch arr -1 \d))
+                         '(assert-equal \d (fetch arr -5 \d)) ])))
+  )
 
 (deftest let-python-test
   (is (= "arr = ['a', 'b', 'c']\nassert_equal('b', fetch(arr, 1, 'd'))\nassert_equal('d', fetch(arr, 5, 'd'))\nassert_equal('c', fetch(arr, -1, 'd'))\nassert_equal('d', fetch(arr, -5, 'd'))"
