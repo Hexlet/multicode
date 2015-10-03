@@ -3,9 +3,9 @@
 
 ## Description
 
-Transforms code written on Clojure to another languages
+Transforms code written in Clojure into other languages
 
-## Accessible languages
+## Supported languages
 
 PHP, Python, Ruby, JavaScript
 
