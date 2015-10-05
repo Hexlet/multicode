@@ -72,7 +72,10 @@
           (get-args (conj '() method-name))
           (get-args r))))))
 
-(defn prettify-expression [lang expression]
+(defmulti prettify-expression (fn [lang _] lang))
+(defmethod prettify-expression :clojure [_ expression]
+  expression)
+(defmethod prettify-expression :default [lang expression]
   (str (generate-expression lang expression) (get-terminator lang)))
 
 (defn prettify-code [lang clojure-code]
