@@ -225,14 +225,6 @@
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
                             (assert-equal [2 4 7] (.pop stack 3)))]))))
 
-(deftest groovy-object-test
-  (is (= "def stack = new Stack([5, 6, 7, 8])\nassertEqual(8, stack.pop())\nassertEqual([5, 6, 7, 4, 2], stack.push([4, 2]))\nassertEqual([2, 4, 7], stack.pop(3))"
-         (prettify-code :groovy
-                        ['(let [stack (Stack. [5 6 7 8])]
-                            (assert-equal 8 (.pop stack))
-                            (assert-equal [5 6 7 4 2] (.push stack [4 2]))
-                            (assert-equal [2 4 7] (.pop stack 3)))]))))
-
 (deftest python-static-methods-test
   (is (= "Array.try_convert([1])" (prettify-code :python ['(Array/try-convert [1])]))))
 
