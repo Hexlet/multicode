@@ -6,6 +6,7 @@
             [multicode.python :refer :all]
             [multicode.coffeescript :refer :all]
             [multicode.go :refer :all]
+            [multicode.groovy :refer :all]
             [multicode.helper :as h]
             [clojure.string :as s]
             [clojure.set :as sets]))
