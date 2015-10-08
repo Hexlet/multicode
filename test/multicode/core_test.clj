@@ -2,6 +2,15 @@
   (:require [clojure.test :refer :all]
             [multicode.core :refer :all]))
 
+(deftest groovy-test
+  (are [groovy clj] (= groovy (prettify-expression :groovy clj))
+       "def myVar = [\"1\", 2, [\"inner\", \"ha\"]]" '(def my-var ["1" 2 [:inner "ha"]])
+       "def theirVar = [\"1\", 2, [\"inner\", \"he\", [\"innermost\", 3]]]" '(def their-var '("1" 2 [:inner "he" ("innermost" 3)]))
+       "def yourVar = [1, \"2\", null, [null, [null]]]" '(def your-var '(1 "2" nil (nil [nil])))
+       "def x = [\"a\": 3, \"b\": \"u\", \"inner\": [\"key\": \"value\"]]" '(def x {:a 3, :b "u", :inner {:key :value}})
+       "assertEqual(3, fib(4))" '(assert-equal 3 (fib 4))
+       "assert(!false)" '(assert (not false))))
+
 (deftest go-test
   (are [go clj] (= go (prettify-expression :go clj))
        "myVar := []int{1, 2, 3}" '(def my-var [1 2 3])
@@ -61,6 +70,15 @@
        "x = {'a': 3, 'b': 'u', 'inner': {'key': 'value'}}" '(def x {:a 3, :b "u", :inner {:key :value}})
        "assert_equal(3, fib(4))" '(assert-equal 3 (fib 4))
        "assert(not False)" '(assert (not false))))
+
+(deftest let-groovy-test
+  (is (= "def arr = [\"a\", \"b\", \"c\"]\nassertEqual(\"b\", fetch(arr, 1, \"d\"))\nassertEqual(\"d\", fetch(arr, 5, \"d\"))\nassertEqual(\"c\", fetch(arr, -1, \"d\"))\nassertEqual(\"d\", fetch(arr, -5, \"d\"))"
+         (prettify-code :groovy
+                        ['(let [arr [\a \b \c]])
+                         '(assert-equal \b (fetch arr 1 \d))
+                         '(assert-equal \d (fetch arr 5 \d))
+                         '(assert-equal \c (fetch arr -1 \d))
+                         '(assert-equal \d (fetch arr -5 \d)) ]))))
 
 (deftest let-go-test
   (is (= "arr := []rune{'a', 'b', 'c'}\nassertEqual('b', fetch(arr, 1, 'd'))\nassertEqual('d', fetch(arr, 5, 'd'))\nassertEqual('c', fetch(arr, -1, 'd'))\nassertEqual('d', fetch(arr, -5, 'd'))"
@@ -202,6 +220,14 @@
 (deftest python-object-test
   (is (= "stack = Stack([5, 6, 7, 8])\nassert_equal(8, stack.pop())\nassert_equal([5, 6, 7, 4, 2], stack.push([4, 2]))\nassert_equal([2, 4, 7], stack.pop(3))"
          (prettify-code :python
+                        ['(let [stack (Stack. [5 6 7 8])]
+                            (assert-equal 8 (.pop stack))
+                            (assert-equal [5 6 7 4 2] (.push stack [4 2]))
+                            (assert-equal [2 4 7] (.pop stack 3)))]))))
+
+(deftest groovy-object-test
+  (is (= "def stack = new Stack([5, 6, 7, 8])\nassertEqual(8, stack.pop())\nassertEqual([5, 6, 7, 4, 2], stack.push([4, 2]))\nassertEqual([2, 4, 7], stack.pop(3))"
+         (prettify-code :groovy
                         ['(let [stack (Stack. [5 6 7 8])]
                             (assert-equal 8 (.pop stack))
                             (assert-equal [5 6 7 4 2] (.push stack [4 2]))
